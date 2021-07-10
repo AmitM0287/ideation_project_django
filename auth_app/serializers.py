@@ -1,9 +1,10 @@
 from rest_framework import serializers
 from auth_app.models import User
 
+
 class RegisterSerializer(serializers.ModelSerializer):
     """
-        Register Serializer : first_name, last_name, email, username, password
+        Register Serializer : name, phone, email, property, service, message
     """
     name = serializers.CharField(min_length=2, max_length=60, required=True)
     phone = serializers.CharField(min_length=10, max_length=12,required=True)

@@ -1,6 +1,7 @@
 from django.db import models
 
-# Register user models
+
+# User model
 class User(models.Model):
     name = models.CharField(max_length=60)
     phone = models.CharField(max_length=20)

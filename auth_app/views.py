@@ -11,10 +11,13 @@ logger = get_logger()
 
 
 class RegisterAPIView(APIView):
+    """
+        RegisterAPIView: Create new user instance
+    """
     def post(self, request):
         """
             This method is used to create new user instance.
-            :param request: It's accept first_name, last_name, email, username and password as parameter.
+            :param request: It's accept name, phone, email, property, service and message as parameter.
             :return: It's return response that user created successfully or not.
         """
         try:
