@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from dotenv import dotenv_values
 
+
 # Configuration for .env values
 environ = dotenv_values('.env')
 
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'auth_app',
+    'passenger_app',
 ]
 
 MIDDLEWARE = [
