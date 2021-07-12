@@ -1,4 +1,3 @@
-from django.db.models.aggregates import Count
 from passenger_app.models import passenger_movement
 
 
