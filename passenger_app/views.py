@@ -24,6 +24,8 @@ class PassengerAPIView(APIView):
             data = pandas.read_csv(request.data['file'])
             # Convert csv to dict
             data = data.to_dict('dict')
+            # Truncate table
+            # passenger_movement.truncate()
             # Print data
             for index in range(len(data['Date'])):
                 duplicate = store_data(date= data['Date'][index], arrivals_actual_counts= data['ArrivalsActualCounts'][index], departures_actual_counts=data['DeparturesActualCounts'][index])
@@ -51,7 +53,7 @@ class PassengerAPIView(APIView):
             return Response({'success': True, 'message': 'Getting all data successfully from database.', "num_of_pages": paginator.num_pages, "page_no": request.data.get('page_no'), "data": data.object_list}, status=status.HTTP_200_OK)
         except EmptyPage as e:
             logger.exception(e)
-            return Response({'success': False, "num_of_pages": '1 to ' + str(paginator.num_pages), "page_no": request.data.get('page_no'), 'message': 'Page not found!'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'success': False, "num_of_pages": '1 to ' + str(paginator.num_pages), "page_no": request.data.get('page_no'), 'message': 'Page not found!'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             logger.exception(e)
             return Response({'success': False, 'message': 'Oops! Something went wrong!'}, status=status.HTTP_400_BAD_REQUEST)
