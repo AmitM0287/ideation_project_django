@@ -6,5 +6,5 @@ from passenger_app import views
 app_name='passenger_app'
 
 urlpatterns = [
-    path('store-data/', views.PassengerAPIView.as_view(), name='passenger_data'),
+    path('data/', views.PassengerAPIView.as_view(), name='passenger_data'),
 ]
