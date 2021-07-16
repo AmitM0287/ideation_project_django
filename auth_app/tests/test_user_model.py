@@ -10,4 +10,4 @@ class TestUserModel:
     """
     def test_init(self):
         user_obj = mixer.blend('auth_app.User')
-        assert user_obj.id == 2, 'should save an instance'
+        assert user_obj.id >= 1, 'should save an instance'
