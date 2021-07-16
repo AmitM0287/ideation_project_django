@@ -10,4 +10,4 @@ class TestPassengerMovementModel:
     """
     def test_init(self):
         passenger_obj = mixer.blend('passenger_app.passenger_movement')
-        assert passenger_obj.id == 1, 'should save an instance'
+        assert passenger_obj.id >= 1, 'should save an instance'
