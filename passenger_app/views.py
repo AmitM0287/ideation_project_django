@@ -25,16 +25,12 @@ class PassengerAPIView(APIView):
             # Convert csv to dict
             data = data.to_dict('dict')
             # Truncate table
-            # passenger_movement.truncate()
-            # Print data
+            passenger_movement.objects.delete()
+            # Store data
             for index in range(len(data['Date'])):
-                duplicate = store_data(date= data['Date'][index], arrivals_actual_counts= data['ArrivalsActualCounts'][index], departures_actual_counts=data['DeparturesActualCounts'][index])
-            if duplicate > 0:
-                # Duplicate records found
-                return Response({'success': True, 'message': 'Database updated successfully.', 'warnings': str(duplicate) + ' duplicate records found!'}, status=status.HTTP_200_OK)
-            else:
-                # Data stored successfully into database
-                return Response({'success': True, 'message': 'All data successfully stored into database.'}, status=status.HTTP_200_OK)
+                store_data(date= data['Date'][index], arrivals_actual_counts= data['ArrivalsActualCounts'][index], departures_actual_counts=data['DeparturesActualCounts'][index])
+            # Data stored successfully into database
+            return Response({'success': True, 'message': 'All data successfully stored into database.'}, status=status.HTTP_200_OK)
         except Exception as e:
             logger.exception(e)
             return Response({'success': False, 'message': 'Oops! Something went wrong!'}, status=status.HTTP_400_BAD_REQUEST)
@@ -47,7 +43,7 @@ class PassengerAPIView(APIView):
         """
         try:
             passenger_data = passenger_movement.objects.all()
-            paginator = Paginator(list(passenger_data.values()), 20)
+            paginator = Paginator(list(passenger_data.values()), 30)
             data = paginator.page(request.data.get('page_no'))
             # Getting data successfully from database
             return Response({'success': True, 'message': 'Getting all data successfully from database.', "num_of_pages": paginator.num_pages, "page_no": request.data.get('page_no'), "data": data.object_list}, status=status.HTTP_200_OK)
