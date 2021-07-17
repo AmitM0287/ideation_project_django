@@ -25,7 +25,7 @@ class PassengerAPIView(APIView):
             # Convert csv to dict
             data = data.to_dict('dict')
             # Truncate table
-            passenger_movement.objects.delete()
+            passenger_movement.objects.all().delete()
             # Store data
             for index in range(len(data['Date'])):
                 store_data(date= data['Date'][index], arrivals_actual_counts= data['ArrivalsActualCounts'][index], departures_actual_counts=data['DeparturesActualCounts'][index])
@@ -43,7 +43,7 @@ class PassengerAPIView(APIView):
         """
         try:
             passenger_data = passenger_movement.objects.all()
-            paginator = Paginator(list(passenger_data.values()), 30)
+            paginator = Paginator(list(passenger_data.values()), request.data.get('page_content'))
             data = paginator.page(request.data.get('page_no'))
             # Getting data successfully from database
             return Response({'success': True, 'message': 'Getting all data successfully from database.', "num_of_pages": paginator.num_pages, "page_no": request.data.get('page_no'), "data": data.object_list}, status=status.HTTP_200_OK)
