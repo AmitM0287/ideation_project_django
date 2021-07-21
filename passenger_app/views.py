@@ -6,6 +6,7 @@ import pandas
 from passenger_app.utils import store_data
 from passenger_app.models import passenger_movement
 from django.core.paginator import Paginator, EmptyPage
+from django.conf import settings
 
 # Logger configuration
 logger = get_logger()
@@ -43,7 +44,7 @@ class PassengerAPIView(APIView):
         """
         try:
             passenger_data = passenger_movement.objects.all()
-            paginator = Paginator(list(passenger_data.values()), request.data.get('page_content'))
+            paginator = Paginator(list(passenger_data.values()), request.data.get('page_content') or settings.PAGE_CONTENT)
             data = paginator.page(request.data.get('page_no'))
             # Getting data successfully from database
             return Response({'success': True, 'message': 'Getting all data successfully from database.', "num_of_pages": paginator.num_pages, "page_no": request.data.get('page_no'), "data": data.object_list}, status=status.HTTP_200_OK)
