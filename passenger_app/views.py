@@ -45,7 +45,7 @@ class PassengerAPIView(APIView):
         try:
             passenger_data = passenger_movement.objects.all()
             paginator = Paginator(list(passenger_data.values()), request.data.get('page_content') or settings.PAGE_CONTENT)
-            data = paginator.page(request.data.get('page_no'))
+            data = paginator.page(request.data.get('page_no') or request.GET.get('page_no'))
             # Getting data successfully from database
             return Response({'success': True, 'message': 'Getting all data successfully from database.', "num_of_pages": paginator.num_pages, "page_no": request.data.get('page_no'), "data": data.object_list}, status=status.HTTP_200_OK)
         except EmptyPage as e:
