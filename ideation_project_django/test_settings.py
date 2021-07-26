@@ -12,3 +12,5 @@ DATABASES = {
         'PORT': environ.get('DB_PORT'),
     }
 }
+
+USE_TZ = False
