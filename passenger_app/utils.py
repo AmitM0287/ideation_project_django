@@ -33,3 +33,15 @@ def convert_to_datetime(string):
         return date_time.strftime('%Y-%m-%d %H:%M:%S')
     except Exception as e:
         raise Exception
+
+
+list_data = []
+
+def convert_to_list(date, arrivals_actual_counts, departures_actual_counts):
+    dict = {
+        'Date': date,
+        'ArrivalsActualCounts': arrivals_actual_counts,
+        'DeparturesActualCounts': departures_actual_counts
+    }
+    list_data.append(dict)
+    return list_data
