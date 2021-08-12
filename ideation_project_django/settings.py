@@ -139,4 +139,4 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Page content default 20
-PAGE_CONTENT = 20
+PAGE_CONTENT = 30
