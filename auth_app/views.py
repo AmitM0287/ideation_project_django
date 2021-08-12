@@ -9,6 +9,17 @@ from logging_config.logger import get_logger
 # Logger configuration
 logger = get_logger()
 
+class EmailError(Exception):
+    """
+        EmailError: Handle email error exception
+    """
+    pass
+
+class PhoneError(Exception):
+    """
+        PhoneError: Handle phone error exception
+    """
+    pass
 
 class RegisterAPIView(APIView):
     """
@@ -26,16 +37,22 @@ class RegisterAPIView(APIView):
             serializer.is_valid(raise_exception=True)
             # Check given phone is already registered or not
             if User.objects.filter(phone=serializer.data.get('phone')).exists():
-                return Response({'success': False, 'message': 'Gven phone number is already registered with another user.', 'data': {'phone': serializer.data.get('phone')}}, status=status.HTTP_400_BAD_REQUEST)
+                raise PhoneError
             # Check given email is already taken or not
             if User.objects.filter(email=serializer.data.get('email')).exists():
-                return Response({'success': False, 'message': 'Gven email is already registered with another user.', 'data': {'email': serializer.data.get('email')}}, status=status.HTTP_400_BAD_REQUEST)
+                 raise EmailError
             # Register user
             user = User(name=serializer.data.get('name'), phone=serializer.data.get('phone'), email=serializer.data.get('email'), property=serializer.data.get('property'), service=serializer.data.get('service'), message=serializer.data.get('message'))
             # Save user
             user.save()
             # User registration successfull
             return Response({'success': True, 'message': 'Registration successfull!', 'data': {'email': serializer.data.get('email')}}, status=status.HTTP_200_OK)
+        except PhoneError as e:
+            logger.exception(e)
+            return Response({'success': False, 'message': 'Gven phone number is already registered with another user.', 'data': {'phone': serializer.data.get('phone')}}, status=status.HTTP_400_BAD_REQUEST)
+        except EmailError as e:
+            logger.exception(e)
+            return Response({'success': False, 'message': 'Gven email is already registered with another user.', 'data': {'email': serializer.data.get('email')}}, status=status.HTTP_400_BAD_REQUEST)
         except ValidationError as e:
             logger.exception(e)
             return Response({'success': False, 'message': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
