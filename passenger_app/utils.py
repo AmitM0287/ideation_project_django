@@ -35,13 +35,15 @@ def convert_to_datetime(string):
         raise Exception
 
 
-list_data = []
-
-def convert_to_list(date, arrivals_actual_counts, departures_actual_counts):
+def convert_to_dict(data):
+    """
+        This method is used to convert object to dictionary.
+        :param data: It's accept object data.
+        :return: It's return dictionary.
+    """
     dict = {
-        'Date': date,
-        'ArrivalsActualCounts': arrivals_actual_counts,
-        'DeparturesActualCounts': departures_actual_counts
+        'Date':  str(data.Date)[0:10],
+        'ArrivalsActualCounts': data.ArrivalsActualCounts,
+        'DeparturesActualCounts': data.DeparturesActualCounts
     }
-    list_data.append(dict)
-    return list_data
+    return dict
