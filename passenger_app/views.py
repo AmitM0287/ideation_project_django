@@ -8,6 +8,7 @@ from passenger_app.utils import store_data, convert_to_dict
 from passenger_app.models import passenger_movement
 from django.conf import settings
 from passenger_app.models import passenger_movement
+from passenger_app.serializer import PassengerMovementSerializer
 
 # Logger configuration
 logger = get_logger()
@@ -48,19 +49,22 @@ class PassengerAPIView(APIView):
         """
         try:
             # Calculate number of pages
-            total = len(list(passenger_movement.objects.raw('SELECT id FROM passenger_app_passenger_movement')))
+            total = passenger_movement.objects.count()
             num_pages = round(total/int(settings.PAGE_CONTENT))
             # Check given page no is exist or not
             if int(request.GET.get('page_no')) > num_pages:
                 raise PageNotFound
             # Calculate OFFSET value
             offset_value = (int(request.GET.get('page_no'))-1) * settings.PAGE_CONTENT
-            # Execute query
-            list_data = []
-            for data in passenger_movement.objects.raw('SELECT * FROM passenger_app_passenger_movement LIMIT %s OFFSET %s ROWS', [settings.PAGE_CONTENT, offset_value]):
-                list_data.append(convert_to_dict(data))
+            # Using raw sql query
+            # list_data = []
+            # for data in passenger_movement.objects.raw('SELECT * FROM passenger_app_passenger_movement LIMIT %s OFFSET %s ROWS', [settings.PAGE_CONTENT, offset_value]):
+            #     list_data.append(convert_to_dict(data))
+            # Using django ORM (object relational mapping)
+            passenger_data = passenger_movement.objects.all()[offset_value : (int(request.GET.get('page_no'))*settings.PAGE_CONTENT)]
+            list_data = PassengerMovementSerializer(passenger_data, many=True)
             # Getting data successfully from database
-            return Response({'success': True, 'message': 'Getting all data successfully from database.', "num_of_pages": num_pages, "page_no": request.GET.get('page_no'), "data": list_data}, status=status.HTTP_200_OK)
+            return Response({'success': True, 'message': 'Getting all data successfully from database.', "num_of_pages": num_pages, "page_no": request.GET.get('page_no'), "data": list_data.data}, status=status.HTTP_200_OK)
         except PageNotFound as e:
             logger.exception(e)
             return Response({'success': False, "num_of_pages": num_pages, "page_no": request.GET.get('page_no'), 'message': 'Page not found!'}, status=status.HTTP_404_NOT_FOUND)
