@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from logging_config.logger import get_logger
 import pandas
-from passenger_app.utils import store_data, convert_to_list
+from passenger_app.utils import store_data, convert_to_dict
 from passenger_app.models import passenger_movement
 from django.conf import settings
 from passenger_app.models import passenger_movement
@@ -56,8 +56,9 @@ class PassengerAPIView(APIView):
             # Calculate OFFSET value
             offset_value = (int(request.GET.get('page_no'))-1) * settings.PAGE_CONTENT
             # Execute query
+            list_data = []
             for data in passenger_movement.objects.raw('SELECT * FROM passenger_app_passenger_movement LIMIT %s OFFSET %s ROWS', [settings.PAGE_CONTENT, offset_value]):
-                list_data = convert_to_list(str(data.Date)[0:10], data.ArrivalsActualCounts, data.DeparturesActualCounts)
+                list_data.append(convert_to_dict(data))
             # Getting data successfully from database
             return Response({'success': True, 'message': 'Getting all data successfully from database.', "num_of_pages": num_pages, "page_no": request.GET.get('page_no'), "data": list_data}, status=status.HTTP_200_OK)
         except PageNotFound as e:
